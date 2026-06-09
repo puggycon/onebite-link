@@ -11,7 +11,7 @@ export default function NewLinkForm() {
   const router = useRouter()
 
   const [url, setUrl] = useState('')
-  const [folder, setFolder] = useState(folders[0])
+  const [folder, setFolder] = useState(folders[0]?.name ?? '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -77,8 +77,8 @@ export default function NewLinkForm() {
           className="border border-[var(--border)] rounded-[6px] px-3 py-2 text-sm text-[var(--text)] outline-none focus:border-[var(--accent)] bg-[var(--card-bg)] transition-colors disabled:opacity-50"
         >
           {folders.map((f) => (
-            <option key={f} value={f}>
-              {f}
+            <option key={f.id} value={f.name}>
+              {f.name}
             </option>
           ))}
         </select>

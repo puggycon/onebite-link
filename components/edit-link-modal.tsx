@@ -51,8 +51,8 @@ export default function EditLinkModal() {
             className="border border-[var(--border)] rounded-[6px] px-3 py-2 text-sm text-[var(--text)] outline-none focus:border-[var(--accent)] bg-[var(--card-bg)] transition-colors"
           >
             {folders.map((f) => (
-              <option key={f} value={f}>
-                {f}
+              <option key={f.id} value={f.name}>
+                {f.name}
               </option>
             ))}
           </select>

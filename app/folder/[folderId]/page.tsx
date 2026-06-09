@@ -5,6 +5,7 @@ import Header from '@/components/header'
 import Sidebar from '@/components/sidebar'
 import LinkCard from '@/components/link-card'
 import { useLinks } from '@/contexts/link-context'
+import { useFolders } from '@/contexts/folder-context'
 
 export default function FolderPage({
   params,
@@ -12,9 +13,10 @@ export default function FolderPage({
   params: Promise<{ folderId: string }>
 }) {
   const { folderId } = use(params)
-  const folder = decodeURIComponent(folderId)
+  const { folders } = useFolders()
+  const folder = folders.find((f) => f.id === Number(folderId))
   const { links } = useLinks()
-  const folderLinks = links.filter((link) => link.folder === folder)
+  const folderLinks = links.filter((link) => link.folder === folder?.name)
 
   return (
     <div className="flex flex-col flex-1">
@@ -22,7 +24,7 @@ export default function FolderPage({
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
         <main className="flex-1 overflow-y-auto bg-[var(--bg)] p-6">
-          <h2 className="text-xl font-semibold text-[var(--text)] mb-5">{folder}</h2>
+          <h2 className="text-xl font-semibold text-[var(--text)] mb-5">{folder?.name}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {folderLinks.map((link) => (
               <LinkCard key={link.id} link={link} />

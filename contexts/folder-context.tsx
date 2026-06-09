@@ -1,20 +1,25 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { FOLDERS } from '@/lib/data'
+import { createClient } from '@/utils/supabase/client'
+
+export interface Folder {
+  id: number
+  name: string
+}
 
 interface FolderContextType {
-  folders: string[]
-  addFolder: (name: string) => void
+  folders: Folder[]
+  addFolder: (name: string) => Promise<void>
   isModalOpen: boolean
   openModal: () => void
   closeModal: () => void
-  folderToDelete: string | null
-  openDeleteModal: (folder: string) => void
+  folderToDelete: Folder | null
+  openDeleteModal: (folder: Folder) => void
   closeDeleteModal: () => void
   deleteFolder: () => void
-  folderToEdit: string | null
-  openEditModal: (folder: string) => void
+  folderToEdit: Folder | null
+  openEditModal: (folder: Folder) => void
   closeEditModal: () => void
   renameFolder: (newName: string) => void
 }
@@ -22,35 +27,45 @@ interface FolderContextType {
 const FolderContext = createContext<FolderContextType | null>(null)
 
 export function FolderProvider({ children }: { children: ReactNode }) {
-  const [folders, setFolders] = useState<string[]>(FOLDERS)
+  const [folders, setFolders] = useState<Folder[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [folderToDelete, setFolderToDelete] = useState<string | null>(null)
-  const [folderToEdit, setFolderToEdit] = useState<string | null>(null)
+  const [folderToDelete, setFolderToDelete] = useState<Folder | null>(null)
+  const [folderToEdit, setFolderToEdit] = useState<Folder | null>(null)
 
   useEffect(() => {
-    const saved = localStorage.getItem('folders')
-    if (saved) setFolders(JSON.parse(saved))
+    const supabase = createClient()
+    supabase
+      .from('folder')
+      .select('id, name')
+      .order('created_at', { ascending: true })
+      .then(({ data }) => {
+        if (data) setFolders(data)
+      })
   }, [])
 
-  function addFolder(name: string) {
-    const updated = [...folders, name]
-    setFolders(updated)
-    localStorage.setItem('folders', JSON.stringify(updated))
+  async function addFolder(name: string) {
+    const supabase = createClient()
+    const { data, error } = await supabase
+      .from('folder')
+      .insert({ name })
+      .select('id, name')
+      .single()
+    if (!error && data) {
+      setFolders((prev) => [...prev, data])
+    }
   }
 
   function renameFolder(newName: string) {
     if (!folderToEdit) return
-    const updated = folders.map((f) => (f === folderToEdit ? newName : f))
-    setFolders(updated)
-    localStorage.setItem('folders', JSON.stringify(updated))
+    setFolders((prev) =>
+      prev.map((f) => (f.id === folderToEdit.id ? { ...f, name: newName } : f))
+    )
     setFolderToEdit(null)
   }
 
   function deleteFolder() {
     if (!folderToDelete) return
-    const updated = folders.filter((f) => f !== folderToDelete)
-    setFolders(updated)
-    localStorage.setItem('folders', JSON.stringify(updated))
+    setFolders((prev) => prev.filter((f) => f.id !== folderToDelete.id))
     setFolderToDelete(null)
   }
 

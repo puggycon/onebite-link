@@ -6,18 +6,22 @@ import { useFolders } from '@/contexts/folder-context'
 export default function NewFolderModal() {
   const { isModalOpen, closeModal, addFolder } = useFolders()
   const [name, setName] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   if (!isModalOpen) return null
 
-  function handleSave() {
+  async function handleSave() {
     const trimmed = name.trim()
-    if (!trimmed) return
-    addFolder(trimmed)
+    if (!trimmed || isSubmitting) return
+    setIsSubmitting(true)
+    await addFolder(trimmed)
     setName('')
+    setIsSubmitting(false)
     closeModal()
   }
 
   function handleCancel() {
+    if (isSubmitting) return
     setName('')
     closeModal()
   }
@@ -44,15 +48,17 @@ export default function NewFolderModal() {
         <div className="flex justify-end gap-2">
           <button
             onClick={handleCancel}
-            className="px-4 py-1.5 rounded-[6px] text-sm text-[var(--text-sub)] hover:bg-[var(--hover-bg)] transition-colors"
+            disabled={isSubmitting}
+            className="px-4 py-1.5 rounded-[6px] text-sm text-[var(--text-sub)] hover:bg-[var(--hover-bg)] transition-colors disabled:opacity-50"
           >
             취소
           </button>
           <button
             onClick={handleSave}
-            className="px-4 py-1.5 rounded-[6px] text-sm font-medium bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] transition-colors"
+            disabled={isSubmitting}
+            className="px-4 py-1.5 rounded-[6px] text-sm font-medium bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            저장
+            {isSubmitting ? '저장 중...' : '저장'}
           </button>
         </div>
       </div>

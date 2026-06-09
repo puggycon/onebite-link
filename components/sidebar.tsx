@@ -25,16 +25,16 @@ export default function Sidebar() {
       </p>
       <ul className="space-y-0.5">
         {folders.map((folder) => (
-          <li key={folder} className="group relative">
+          <li key={folder.id} className="group relative">
             <Link
-              href={`/folder/${folder}`}
+              href={`/folder/${folder.id}`}
               className={`flex items-center justify-between w-full px-3 py-2 rounded-[6px] text-sm transition-colors hover:bg-[var(--hover-bg)] ${
-                pathname === `/folder/${folder}`
+                pathname === `/folder/${folder.id}`
                   ? 'bg-[var(--hover-bg)] text-[var(--text)] font-medium'
                   : 'text-[var(--text-sub)]'
               }`}
             >
-              <span>{folder}</span>
+              <span>{folder.name}</span>
               <span className="flex items-center gap-0.5">
                 <button
                   onClick={(e) => {
@@ -42,7 +42,7 @@ export default function Sidebar() {
                     openEditModal(folder)
                   }}
                   className="opacity-0 group-hover:opacity-100 p-0.5 rounded text-[var(--text-sub)] hover:text-[var(--accent)] transition-all"
-                  aria-label={`${folder} 폴더 수정`}
+                  aria-label={`${folder.name} 폴더 수정`}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +65,7 @@ export default function Sidebar() {
                     openDeleteModal(folder)
                   }}
                   className="opacity-0 group-hover:opacity-100 p-0.5 rounded text-[var(--text-sub)] hover:text-[var(--error)] transition-all"
-                  aria-label={`${folder} 폴더 삭제`}
+                  aria-label={`${folder.name} 폴더 삭제`}
                 >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

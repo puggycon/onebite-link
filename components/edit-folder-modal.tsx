@@ -8,14 +8,15 @@ export default function EditFolderModal() {
   const [name, setName] = useState('')
 
   useEffect(() => {
-    if (folderToEdit) setName(folderToEdit)
+    if (folderToEdit) setName(folderToEdit.name)
   }, [folderToEdit])
 
   if (!folderToEdit) return null
 
   function handleSave() {
+    if (!folderToEdit) return
     const trimmed = name.trim()
-    if (!trimmed || trimmed === folderToEdit) {
+    if (!trimmed || trimmed === folderToEdit.name) {
       closeEditModal()
       return
     }
