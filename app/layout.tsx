@@ -3,6 +3,7 @@ import "./globals.css";
 import { FolderProvider } from "@/contexts/folder-context";
 import NewFolderModal from "@/components/new-folder-modal";
 import DeleteFolderModal from "@/components/delete-folder-modal";
+import EditFolderModal from "@/components/edit-folder-modal";
 
 export const metadata: Metadata = {
   title: "한입 링크",
@@ -21,6 +22,7 @@ export default function RootLayout({
           {children}
           <NewFolderModal />
           <DeleteFolderModal />
+          <EditFolderModal />
         </FolderProvider>
       </body>
     </html>

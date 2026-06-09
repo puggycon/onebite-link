@@ -6,7 +6,7 @@ import { useFolders } from '@/contexts/folder-context'
 
 export default function Sidebar() {
   const pathname = usePathname()
-  const { folders, openDeleteModal } = useFolders()
+  const { folders, openDeleteModal, openEditModal } = useFolders()
 
   return (
     <aside className="w-52 flex-shrink-0 border-r border-[var(--border)] bg-[var(--bg)] overflow-y-auto p-3">
@@ -35,14 +35,38 @@ export default function Sidebar() {
               }`}
             >
               <span>{folder}</span>
-              <button
-                onClick={(e) => {
-                  e.preventDefault()
-                  openDeleteModal(folder)
-                }}
-                className="opacity-0 group-hover:opacity-100 p-0.5 rounded text-[var(--text-sub)] hover:text-[var(--error)] transition-all"
-                aria-label={`${folder} 폴더 삭제`}
-              >
+              <span className="flex items-center gap-0.5">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault()
+                    openEditModal(folder)
+                  }}
+                  className="opacity-0 group-hover:opacity-100 p-0.5 rounded text-[var(--text-sub)] hover:text-[var(--accent)] transition-all"
+                  aria-label={`${folder} 폴더 수정`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault()
+                    openDeleteModal(folder)
+                  }}
+                  className="opacity-0 group-hover:opacity-100 p-0.5 rounded text-[var(--text-sub)] hover:text-[var(--error)] transition-all"
+                  aria-label={`${folder} 폴더 삭제`}
+                >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="14"
@@ -60,7 +84,8 @@ export default function Sidebar() {
                   <path d="M14 11v6" />
                   <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
                 </svg>
-              </button>
+                </button>
+              </span>
             </Link>
           </li>
         ))}
