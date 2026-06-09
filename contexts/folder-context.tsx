@@ -70,10 +70,17 @@ export function FolderProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  function deleteFolder() {
+  async function deleteFolder() {
     if (!folderToDelete) return
-    setFolders((prev) => prev.filter((f) => f.id !== folderToDelete.id))
-    setFolderToDelete(null)
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('folder')
+      .delete()
+      .eq('id', folderToDelete.id)
+    if (!error) {
+      setFolders((prev) => prev.filter((f) => f.id !== folderToDelete.id))
+      setFolderToDelete(null)
+    }
   }
 
   return (
