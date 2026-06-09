@@ -1,20 +1,15 @@
 import Header from '@/components/header'
 import Sidebar from '@/components/sidebar'
-import LinkCard from '@/components/link-card'
-import { LINKS } from '@/lib/data'
+import NewLinkForm from '@/components/new-link-form'
 
-export default function Home() {
+export default function NewPage() {
   return (
     <div className="flex flex-col flex-1">
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
         <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {LINKS.map((link) => (
-              <LinkCard key={link.id} link={link} />
-            ))}
-          </div>
+          <NewLinkForm />
         </main>
       </div>
     </div>
