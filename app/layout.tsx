@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { FolderProvider } from "@/contexts/folder-context";
+import { LinkProvider } from "@/contexts/link-context";
 import NewFolderModal from "@/components/new-folder-modal";
 import DeleteFolderModal from "@/components/delete-folder-modal";
 import EditFolderModal from "@/components/edit-folder-modal";
@@ -19,10 +20,12 @@ export default function RootLayout({
     <html lang="ko" className="h-full">
       <body className="min-h-full flex flex-col">
         <FolderProvider>
-          {children}
-          <NewFolderModal />
-          <DeleteFolderModal />
-          <EditFolderModal />
+          <LinkProvider>
+            {children}
+            <NewFolderModal />
+            <DeleteFolderModal />
+            <EditFolderModal />
+          </LinkProvider>
         </FolderProvider>
       </body>
     </html>

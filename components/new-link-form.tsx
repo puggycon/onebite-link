@@ -1,16 +1,47 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useFolders } from '@/contexts/folder-context'
+import { useLinks } from '@/contexts/link-context'
 
 export default function NewLinkForm() {
   const { folders } = useFolders()
+  const { addLink } = useLinks()
+  const router = useRouter()
+
   const [url, setUrl] = useState('')
   const [folder, setFolder] = useState(folders[0])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    // TODO: 저장 로직
+    setLoading(true)
+    setError('')
+
+    try {
+      const res = await fetch(`/api/og?url=${encodeURIComponent(url)}`)
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.error || '링크 정보를 가져올 수 없습니다.')
+      }
+
+      addLink({
+        url,
+        folder,
+        title: data.title || url,
+        description: data.description || '',
+        thumbnail: data.image || '',
+      })
+
+      router.push('/')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '오류가 발생했습니다.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -30,7 +61,8 @@ export default function NewLinkForm() {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           required
-          className="border border-[var(--border)] rounded-[6px] px-3 py-2 text-base text-[var(--text)] outline-none focus:border-[var(--accent)] placeholder:text-[var(--placeholder)] transition-colors"
+          disabled={loading}
+          className="border border-[var(--border)] rounded-[6px] px-3 py-2 text-base text-[var(--text)] outline-none focus:border-[var(--accent)] placeholder:text-[var(--placeholder)] transition-colors disabled:opacity-50"
         />
       </div>
       <div className="flex flex-col gap-1.5">
@@ -41,7 +73,8 @@ export default function NewLinkForm() {
           id="folder"
           value={folder}
           onChange={(e) => setFolder(e.target.value)}
-          className="border border-[var(--border)] rounded-[6px] px-3 py-2 text-sm text-[var(--text)] outline-none focus:border-[var(--accent)] bg-[var(--card-bg)] transition-colors"
+          disabled={loading}
+          className="border border-[var(--border)] rounded-[6px] px-3 py-2 text-sm text-[var(--text)] outline-none focus:border-[var(--accent)] bg-[var(--card-bg)] transition-colors disabled:opacity-50"
         >
           {folders.map((f) => (
             <option key={f} value={f}>
@@ -50,11 +83,15 @@ export default function NewLinkForm() {
           ))}
         </select>
       </div>
+      {error && (
+        <p className="text-sm text-[var(--error)]">{error}</p>
+      )}
       <button
         type="submit"
-        className="bg-[var(--accent)] text-white px-4 py-2 rounded-[6px] text-sm font-medium hover:bg-[var(--accent-hover)] transition-colors self-start"
+        disabled={loading}
+        className="bg-[var(--accent)] text-white px-4 py-2 rounded-[6px] text-sm font-medium hover:bg-[var(--accent-hover)] transition-colors self-start disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        저장
+        {loading ? '저장 중...' : '저장'}
       </button>
     </form>
   )
