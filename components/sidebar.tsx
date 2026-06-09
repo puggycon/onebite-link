@@ -2,10 +2,11 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { FOLDERS } from '@/lib/data'
+import { useFolders } from '@/contexts/folder-context'
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const { folders } = useFolders()
 
   return (
     <aside className="w-52 flex-shrink-0 border-r border-[var(--border)] bg-[var(--bg)] overflow-y-auto p-3">
@@ -23,7 +24,7 @@ export default function Sidebar() {
         폴더
       </p>
       <ul className="space-y-0.5">
-        {FOLDERS.map((folder) => (
+        {folders.map((folder) => (
           <li key={folder}>
             <Link
               href={`/folder/${folder}`}

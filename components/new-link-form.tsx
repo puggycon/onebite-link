@@ -1,11 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { FOLDERS } from '@/lib/data'
+import { useFolders } from '@/contexts/folder-context'
 
 export default function NewLinkForm() {
+  const { folders } = useFolders()
   const [url, setUrl] = useState('')
-  const [folder, setFolder] = useState(FOLDERS[0])
+  const [folder, setFolder] = useState(folders[0])
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -42,7 +43,7 @@ export default function NewLinkForm() {
           onChange={(e) => setFolder(e.target.value)}
           className="border border-[var(--border)] rounded-[6px] px-3 py-2 text-sm text-[var(--text)] outline-none focus:border-[var(--accent)] bg-[var(--card-bg)] transition-colors"
         >
-          {FOLDERS.map((f) => (
+          {folders.map((f) => (
             <option key={f} value={f}>
               {f}
             </option>
