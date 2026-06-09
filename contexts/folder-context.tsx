@@ -9,6 +9,10 @@ interface FolderContextType {
   isModalOpen: boolean
   openModal: () => void
   closeModal: () => void
+  folderToDelete: string | null
+  openDeleteModal: (folder: string) => void
+  closeDeleteModal: () => void
+  deleteFolder: () => void
 }
 
 const FolderContext = createContext<FolderContextType | null>(null)
@@ -16,6 +20,7 @@ const FolderContext = createContext<FolderContextType | null>(null)
 export function FolderProvider({ children }: { children: ReactNode }) {
   const [folders, setFolders] = useState<string[]>(FOLDERS)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [folderToDelete, setFolderToDelete] = useState<string | null>(null)
 
   useEffect(() => {
     const saved = localStorage.getItem('folders')
@@ -28,6 +33,14 @@ export function FolderProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('folders', JSON.stringify(updated))
   }
 
+  function deleteFolder() {
+    if (!folderToDelete) return
+    const updated = folders.filter((f) => f !== folderToDelete)
+    setFolders(updated)
+    localStorage.setItem('folders', JSON.stringify(updated))
+    setFolderToDelete(null)
+  }
+
   return (
     <FolderContext.Provider
       value={{
@@ -36,6 +49,10 @@ export function FolderProvider({ children }: { children: ReactNode }) {
         isModalOpen,
         openModal: () => setIsModalOpen(true),
         closeModal: () => setIsModalOpen(false),
+        folderToDelete,
+        openDeleteModal: (folder) => setFolderToDelete(folder),
+        closeDeleteModal: () => setFolderToDelete(null),
+        deleteFolder,
       }}
     >
       {children}

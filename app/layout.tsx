@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { FolderProvider } from "@/contexts/folder-context";
 import NewFolderModal from "@/components/new-folder-modal";
+import DeleteFolderModal from "@/components/delete-folder-modal";
 
 export const metadata: Metadata = {
   title: "한입 링크",
@@ -19,6 +20,7 @@ export default function RootLayout({
         <FolderProvider>
           {children}
           <NewFolderModal />
+          <DeleteFolderModal />
         </FolderProvider>
       </body>
     </html>
