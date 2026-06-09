@@ -6,6 +6,7 @@ import NewFolderModal from "@/components/new-folder-modal";
 import DeleteFolderModal from "@/components/delete-folder-modal";
 import EditFolderModal from "@/components/edit-folder-modal";
 import DeleteLinkModal from "@/components/delete-link-modal";
+import EditLinkModal from "@/components/edit-link-modal";
 
 export const metadata: Metadata = {
   title: "한입 링크",
@@ -27,6 +28,7 @@ export default function RootLayout({
             <DeleteFolderModal />
             <EditFolderModal />
             <DeleteLinkModal />
+            <EditLinkModal />
           </LinkProvider>
         </FolderProvider>
       </body>

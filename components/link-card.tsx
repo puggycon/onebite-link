@@ -3,13 +3,19 @@
 import { LinkData, useLinks } from '@/contexts/link-context'
 
 export default function LinkCard({ link }: { link: LinkData }) {
-  const { openDeleteModal } = useLinks()
+  const { openDeleteModal, openEditModal } = useLinks()
   const hostname = new URL(link.url).hostname
 
   function handleDelete(e: React.MouseEvent) {
     e.preventDefault()
     e.stopPropagation()
     openDeleteModal(link)
+  }
+
+  function handleEdit(e: React.MouseEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    openEditModal(link)
   }
 
   return (
@@ -19,29 +25,51 @@ export default function LinkCard({ link }: { link: LinkData }) {
       rel="noopener noreferrer"
       className="group relative bg-[var(--card-bg)] border border-[var(--border)] rounded-[8px] overflow-hidden flex flex-col hover:bg-[var(--hover-bg)] transition-colors"
     >
-      <button
-        onClick={handleDelete}
-        aria-label="링크 삭제"
-        className="absolute top-2 right-2 z-10 p-1.5 rounded-[6px] bg-[var(--card-bg)] border border-[var(--border)] text-[var(--text-sub)] opacity-0 group-hover:opacity-100 hover:text-[var(--error)] hover:border-[var(--error)] transition-all"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+      <div className="absolute top-2 right-2 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+        <button
+          onClick={handleEdit}
+          aria-label="링크 수정"
+          className="p-1.5 rounded-[6px] bg-[var(--card-bg)] border border-[var(--border)] text-[var(--text-sub)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors"
         >
-          <polyline points="3 6 5 6 21 6" />
-          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-          <path d="M10 11v6" />
-          <path d="M14 11v6" />
-          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-        </svg>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+          </svg>
+        </button>
+        <button
+          onClick={handleDelete}
+          aria-label="링크 삭제"
+          className="p-1.5 rounded-[6px] bg-[var(--card-bg)] border border-[var(--border)] text-[var(--text-sub)] hover:text-[var(--error)] hover:border-[var(--error)] transition-colors"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+            <path d="M10 11v6" />
+            <path d="M14 11v6" />
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+          </svg>
+        </button>
+      </div>
 
       {link.thumbnail && (
         <img
