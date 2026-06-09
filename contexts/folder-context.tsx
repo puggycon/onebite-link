@@ -55,12 +55,19 @@ export function FolderProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  function renameFolder(newName: string) {
+  async function renameFolder(newName: string) {
     if (!folderToEdit) return
-    setFolders((prev) =>
-      prev.map((f) => (f.id === folderToEdit.id ? { ...f, name: newName } : f))
-    )
-    setFolderToEdit(null)
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('folder')
+      .update({ name: newName })
+      .eq('id', folderToEdit.id)
+    if (!error) {
+      setFolders((prev) =>
+        prev.map((f) => (f.id === folderToEdit.id ? { ...f, name: newName } : f))
+      )
+      setFolderToEdit(null)
+    }
   }
 
   function deleteFolder() {
