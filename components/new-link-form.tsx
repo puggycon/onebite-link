@@ -1,8 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-
-const FOLDERS = ['개발', '디자인', '마케팅', '영상']
+import { FOLDERS } from '@/lib/data'
 
 export default function NewLinkForm() {
   const [url, setUrl] = useState('')
@@ -16,10 +15,11 @@ export default function NewLinkForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white border border-gray-200 rounded-xl p-6 flex flex-col gap-4 max-w-lg w-full"
+      className="bg-[var(--card-bg)] border border-[var(--border)] rounded-[8px] p-6 flex flex-col gap-5 max-w-lg w-full"
     >
-      <div className="flex flex-col gap-1">
-        <label htmlFor="url" className="text-sm font-medium text-gray-700">
+      <h2 className="text-xl font-semibold text-[var(--text)]">새 링크 추가</h2>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="url" className="text-sm font-medium text-[var(--text)]">
           링크 URL
         </label>
         <input
@@ -29,18 +29,18 @@ export default function NewLinkForm() {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           required
-          className="border border-gray-300 rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder:text-gray-500"
+          className="border border-[var(--border)] rounded-[6px] px-3 py-2 text-base text-[var(--text)] outline-none focus:border-[var(--accent)] placeholder:text-[var(--placeholder)] transition-colors"
         />
       </div>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="folder" className="text-sm font-medium text-gray-700">
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="folder" className="text-sm font-medium text-[var(--text)]">
           폴더
         </label>
         <select
           id="folder"
           value={folder}
           onChange={(e) => setFolder(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+          className="border border-[var(--border)] rounded-[6px] px-3 py-2 text-sm text-[var(--text)] outline-none focus:border-[var(--accent)] bg-[var(--card-bg)] transition-colors"
         >
           {FOLDERS.map((f) => (
             <option key={f} value={f}>
@@ -51,7 +51,7 @@ export default function NewLinkForm() {
       </div>
       <button
         type="submit"
-        className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors"
+        className="bg-[var(--accent)] text-white px-4 py-2 rounded-[6px] text-sm font-medium hover:bg-[var(--accent-hover)] transition-colors self-start"
       >
         저장
       </button>

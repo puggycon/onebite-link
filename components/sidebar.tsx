@@ -8,29 +8,29 @@ export default function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="w-56 flex-shrink-0 border-r border-gray-200 bg-gray-50 overflow-y-auto p-4">
+    <aside className="w-52 flex-shrink-0 border-r border-[var(--border)] bg-[var(--bg)] overflow-y-auto p-3">
       <Link
         href="/"
-        className={`block w-full text-left px-3 py-2 rounded-md text-sm font-semibold mb-3 transition-colors ${
+        className={`block w-full text-left px-3 py-2 rounded-[6px] text-sm font-semibold mb-2 transition-colors hover:bg-[var(--hover-bg)] ${
           pathname === '/'
-            ? 'bg-indigo-100 text-indigo-700'
-            : 'text-gray-600 hover:bg-gray-100'
+            ? 'bg-[var(--hover-bg)] text-[var(--text)]'
+            : 'text-[var(--text-sub)]'
         }`}
       >
-        ALL
+        전체
       </Link>
-      <p className="px-3 mb-1 text-xs font-medium text-gray-400 uppercase tracking-wider">
+      <p className="px-3 mb-1 text-xs font-medium text-[var(--text-sub)] uppercase tracking-wider">
         폴더
       </p>
-      <ul className="space-y-1">
+      <ul className="space-y-0.5">
         {FOLDERS.map((folder) => (
           <li key={folder}>
             <Link
               href={`/folder/${folder}`}
-              className={`block w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+              className={`block w-full text-left px-3 py-2 rounded-[6px] text-sm transition-colors hover:bg-[var(--hover-bg)] ${
                 pathname === `/folder/${folder}`
-                  ? 'bg-indigo-100 text-indigo-700 font-medium'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  ? 'bg-[var(--hover-bg)] text-[var(--text)] font-medium'
+                  : 'text-[var(--text-sub)]'
               }`}
             >
               {folder}

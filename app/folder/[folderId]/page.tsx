@@ -17,7 +17,8 @@ export default async function FolderPage({
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <main className="flex-1 overflow-y-auto bg-[var(--bg)] p-6">
+          <h2 className="text-xl font-semibold text-[var(--text)] mb-5">{folder}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {links.map((link) => (
               <LinkCard key={link.id} link={link} />
