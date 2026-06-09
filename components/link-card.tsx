@@ -1,15 +1,48 @@
-import { LinkData } from '@/contexts/link-context'
+'use client'
+
+import { LinkData, useLinks } from '@/contexts/link-context'
 
 export default function LinkCard({ link }: { link: LinkData }) {
+  const { openDeleteModal } = useLinks()
   const hostname = new URL(link.url).hostname
+
+  function handleDelete(e: React.MouseEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    openDeleteModal(link)
+  }
 
   return (
     <a
       href={link.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="bg-[var(--card-bg)] border border-[var(--border)] rounded-[8px] overflow-hidden flex flex-col hover:bg-[var(--hover-bg)] transition-colors"
+      className="group relative bg-[var(--card-bg)] border border-[var(--border)] rounded-[8px] overflow-hidden flex flex-col hover:bg-[var(--hover-bg)] transition-colors"
     >
+      <button
+        onClick={handleDelete}
+        aria-label="링크 삭제"
+        className="absolute top-2 right-2 z-10 p-1.5 rounded-[6px] bg-[var(--card-bg)] border border-[var(--border)] text-[var(--text-sub)] opacity-0 group-hover:opacity-100 hover:text-[var(--error)] hover:border-[var(--error)] transition-all"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="3 6 5 6 21 6" />
+          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+          <path d="M10 11v6" />
+          <path d="M14 11v6" />
+          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+        </svg>
+      </button>
+
       {link.thumbnail && (
         <img
           src={link.thumbnail}

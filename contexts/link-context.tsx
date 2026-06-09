@@ -15,12 +15,17 @@ export type LinkData = {
 interface LinkContextType {
   links: LinkData[]
   addLink: (link: Omit<LinkData, 'id'>) => void
+  linkToDelete: LinkData | null
+  openDeleteModal: (link: LinkData) => void
+  closeDeleteModal: () => void
+  deleteLink: () => void
 }
 
 const LinkContext = createContext<LinkContextType | null>(null)
 
 export function LinkProvider({ children }: { children: ReactNode }) {
   const [links, setLinks] = useState<LinkData[]>(LINKS)
+  const [linkToDelete, setLinkToDelete] = useState<LinkData | null>(null)
 
   useEffect(() => {
     const saved = localStorage.getItem('links')
@@ -35,8 +40,27 @@ export function LinkProvider({ children }: { children: ReactNode }) {
     })
   }
 
+  function deleteLink() {
+    if (!linkToDelete) return
+    setLinks((prev) => {
+      const updated = prev.filter((l) => l.id !== linkToDelete.id)
+      localStorage.setItem('links', JSON.stringify(updated))
+      return updated
+    })
+    setLinkToDelete(null)
+  }
+
   return (
-    <LinkContext.Provider value={{ links, addLink }}>
+    <LinkContext.Provider
+      value={{
+        links,
+        addLink,
+        linkToDelete,
+        openDeleteModal: (link) => setLinkToDelete(link),
+        closeDeleteModal: () => setLinkToDelete(null),
+        deleteLink,
+      }}
+    >
       {children}
     </LinkContext.Provider>
   )
