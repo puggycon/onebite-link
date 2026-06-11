@@ -1,9 +1,12 @@
 'use client'
 
 import { LinkData, useLinks } from '@/contexts/link-context'
+import { useFolders } from '@/contexts/folder-context'
 
 export default function LinkCard({ link }: { link: LinkData }) {
   const { openDeleteModal, openEditModal } = useLinks()
+  const { folders } = useFolders()
+  const folderName = folders.find((f) => f.id === link.folder_id)?.name
   const hostname = new URL(link.url).hostname
 
   function handleDelete(e: React.MouseEvent) {
@@ -71,9 +74,9 @@ export default function LinkCard({ link }: { link: LinkData }) {
         </button>
       </div>
 
-      {link.thumbnail && (
+      {link.thumbnail_url && (
         <img
-          src={link.thumbnail}
+          src={link.thumbnail_url}
           alt=""
           className="w-full h-36 object-cover flex-shrink-0"
           onError={(e) => {
@@ -102,9 +105,11 @@ export default function LinkCard({ link }: { link: LinkData }) {
             </p>
           )}
         </div>
-        <span className="mt-auto self-start text-xs bg-[var(--hover-bg)] text-[var(--text-sub)] px-2 py-0.5 rounded-[4px]">
-          {link.folder}
-        </span>
+        {folderName && (
+          <span className="mt-auto self-start text-xs bg-[var(--hover-bg)] text-[var(--text-sub)] px-2 py-0.5 rounded-[4px]">
+            {folderName}
+          </span>
+        )}
       </div>
     </a>
   )

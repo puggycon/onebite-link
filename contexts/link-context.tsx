@@ -1,69 +1,95 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { LINKS } from '@/lib/data'
+import { createClient } from '@/utils/supabase/client'
 
 export type LinkData = {
   id: number
   title: string
   url: string
   description: string
-  folder: string
-  thumbnail?: string
+  folder_id: number | null
+  thumbnail_url?: string
 }
 
 interface LinkContextType {
   links: LinkData[]
-  addLink: (link: Omit<LinkData, 'id'>) => void
+  addLink: (link: Omit<LinkData, 'id'>) => Promise<void>
   linkToDelete: LinkData | null
   openDeleteModal: (link: LinkData) => void
   closeDeleteModal: () => void
-  deleteLink: () => void
+  deleteLink: () => Promise<void>
   linkToEdit: LinkData | null
   openEditModal: (link: LinkData) => void
   closeEditModal: () => void
-  updateLink: (updated: Pick<LinkData, 'id' | 'title' | 'description' | 'folder'>) => void
+  updateLink: (updated: Pick<LinkData, 'id' | 'title' | 'description' | 'folder_id'>) => Promise<void>
 }
 
 const LinkContext = createContext<LinkContextType | null>(null)
 
 export function LinkProvider({ children }: { children: ReactNode }) {
-  const [links, setLinks] = useState<LinkData[]>(LINKS)
+  const [links, setLinks] = useState<LinkData[]>([])
   const [linkToDelete, setLinkToDelete] = useState<LinkData | null>(null)
   const [linkToEdit, setLinkToEdit] = useState<LinkData | null>(null)
 
   useEffect(() => {
-    const saved = localStorage.getItem('links')
-    if (saved) setLinks(JSON.parse(saved))
+    const supabase = createClient()
+    supabase
+      .from('link')
+      .select('id, url, title, description, thumbnail_url, folder_id')
+      .order('created_at', { ascending: false })
+      .then(({ data }) => {
+        if (data) setLinks(data)
+      })
   }, [])
 
-  function addLink(link: Omit<LinkData, 'id'>) {
-    setLinks((prev) => {
-      const updated = [{ ...link, id: Date.now() }, ...prev]
-      localStorage.setItem('links', JSON.stringify(updated))
-      return updated
-    })
+  async function addLink(link: Omit<LinkData, 'id'>) {
+    const supabase = createClient()
+    const { data, error } = await supabase
+      .from('link')
+      .insert({
+        url: link.url,
+        title: link.title,
+        description: link.description,
+        thumbnail_url: link.thumbnail_url,
+        folder_id: link.folder_id,
+      })
+      .select('id, url, title, description, thumbnail_url, folder_id')
+      .single()
+    if (!error && data) {
+      setLinks((prev) => [data, ...prev])
+    }
   }
 
-  function deleteLink() {
+  async function deleteLink() {
     if (!linkToDelete) return
-    setLinks((prev) => {
-      const updated = prev.filter((l) => l.id !== linkToDelete.id)
-      localStorage.setItem('links', JSON.stringify(updated))
-      return updated
-    })
-    setLinkToDelete(null)
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('link')
+      .delete()
+      .eq('id', linkToDelete.id)
+    if (!error) {
+      setLinks((prev) => prev.filter((l) => l.id !== linkToDelete.id))
+      setLinkToDelete(null)
+    }
   }
 
-  function updateLink(fields: Pick<LinkData, 'id' | 'title' | 'description' | 'folder'>) {
-    setLinks((prev) => {
-      const updated = prev.map((l) =>
-        l.id === fields.id ? { ...l, ...fields } : l
+  async function updateLink(fields: Pick<LinkData, 'id' | 'title' | 'description' | 'folder_id'>) {
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('link')
+      .update({
+        title: fields.title,
+        description: fields.description,
+        folder_id: fields.folder_id,
+      })
+      .eq('id', fields.id)
+    if (!error) {
+      setLinks((prev) =>
+        prev.map((l) => (l.id === fields.id ? { ...l, ...fields } : l))
       )
-      localStorage.setItem('links', JSON.stringify(updated))
-      return updated
-    })
-    setLinkToEdit(null)
+      setLinkToEdit(null)
+    }
   }
 
   return (

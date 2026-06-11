@@ -16,7 +16,7 @@ export default function FolderPage({
   const { folders } = useFolders()
   const folder = folders.find((f) => f.id === Number(folderId))
   const { links } = useLinks()
-  const folderLinks = links.filter((link) => link.folder === folder?.name)
+  const folderLinks = links.filter((link) => link.folder_id === Number(folderId))
 
   return (
     <div className="flex flex-col flex-1">

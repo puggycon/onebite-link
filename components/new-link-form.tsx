@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useFolders } from '@/contexts/folder-context'
 import { useLinks } from '@/contexts/link-context'
@@ -11,12 +11,19 @@ export default function NewLinkForm() {
   const router = useRouter()
 
   const [url, setUrl] = useState('')
-  const [folder, setFolder] = useState(folders[0]?.name ?? '')
+  const [folderId, setFolderId] = useState<number | null>(folders[0]?.id ?? null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  useEffect(() => {
+    if (folderId === null && folders.length > 0) {
+      setFolderId(folders[0].id)
+    }
+  }, [folders])
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (loading) return
     setLoading(true)
     setError('')
 
@@ -28,12 +35,12 @@ export default function NewLinkForm() {
         throw new Error(data.error || '링크 정보를 가져올 수 없습니다.')
       }
 
-      addLink({
+      await addLink({
         url,
-        folder,
+        folder_id: folderId,
         title: data.title || url,
         description: data.description || '',
-        thumbnail: data.image || '',
+        thumbnail_url: data.image || '',
       })
 
       router.push('/')
@@ -71,13 +78,14 @@ export default function NewLinkForm() {
         </label>
         <select
           id="folder"
-          value={folder}
-          onChange={(e) => setFolder(e.target.value)}
+          value={folderId ?? ''}
+          onChange={(e) => setFolderId(e.target.value ? Number(e.target.value) : null)}
           disabled={loading}
           className="border border-[var(--border)] rounded-[6px] px-3 py-2 text-sm text-[var(--text)] outline-none focus:border-[var(--accent)] bg-[var(--card-bg)] transition-colors disabled:opacity-50"
         >
+          <option value="">폴더 없음</option>
           {folders.map((f) => (
-            <option key={f.id} value={f.name}>
+            <option key={f.id} value={f.id}>
               {f.name}
             </option>
           ))}

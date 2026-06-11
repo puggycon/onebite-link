@@ -10,13 +10,13 @@ export default function EditLinkModal() {
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [folder, setFolder] = useState('')
+  const [folderId, setFolderId] = useState<number | null>(null)
 
   useEffect(() => {
     if (linkToEdit) {
       setTitle(linkToEdit.title)
       setDescription(linkToEdit.description)
-      setFolder(linkToEdit.folder)
+      setFolderId(linkToEdit.folder_id)
     }
   }, [linkToEdit])
 
@@ -28,7 +28,7 @@ export default function EditLinkModal() {
       id: linkToEdit.id,
       title: title.trim() || linkToEdit.title,
       description: description.trim(),
-      folder,
+      folder_id: folderId,
     })
   }
 
@@ -46,12 +46,13 @@ export default function EditLinkModal() {
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium text-[var(--text)]">폴더</label>
           <select
-            value={folder}
-            onChange={(e) => setFolder(e.target.value)}
+            value={folderId ?? ''}
+            onChange={(e) => setFolderId(e.target.value ? Number(e.target.value) : null)}
             className="border border-[var(--border)] rounded-[6px] px-3 py-2 text-sm text-[var(--text)] outline-none focus:border-[var(--accent)] bg-[var(--card-bg)] transition-colors"
           >
+            <option value="">폴더 없음</option>
             {folders.map((f) => (
-              <option key={f.id} value={f.name}>
+              <option key={f.id} value={f.id}>
                 {f.name}
               </option>
             ))}
