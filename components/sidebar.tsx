@@ -1,15 +1,25 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useFolders } from '@/contexts/folder-context'
+import { createClient } from '@/lib/supabase/client'
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
   const { folders, openDeleteModal, openEditModal } = useFolders()
 
+  const handleLogout = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/login')
+    router.refresh()
+  }
+
   return (
-    <aside className="w-52 flex-shrink-0 border-r border-[var(--border)] bg-[var(--bg)] overflow-y-auto p-3">
+    <aside className="w-52 flex-shrink-0 border-r border-[var(--border)] bg-[var(--bg)] overflow-y-auto p-3 flex flex-col">
+      <div className="flex-1">
       <Link
         href="/"
         className={`block w-full text-left px-3 py-2 rounded-[6px] text-sm font-semibold mb-2 transition-colors hover:bg-[var(--hover-bg)] ${
@@ -90,6 +100,28 @@ export default function Sidebar() {
           </li>
         ))}
       </ul>
+      </div>
+      <button
+        onClick={handleLogout}
+        className="flex items-center gap-2 w-full text-left px-3 py-2 rounded-[6px] text-sm text-[var(--text-sub)] transition-colors hover:bg-[var(--hover-bg)]"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+        로그아웃
+      </button>
     </aside>
   )
 }
