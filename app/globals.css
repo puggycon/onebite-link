@@ -33,8 +33,13 @@ body {
   transition: background 0.15s ease;
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   background: var(--accent-hover);
+}
+
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .input-field {
@@ -55,4 +60,45 @@ body {
 
 .input-field:focus {
   border-color: var(--accent);
+}
+
+.toast-error {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--error);
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  min-width: 280px;
+  max-width: 400px;
+  z-index: 9999;
+  animation: toast-in 0.2s ease;
+}
+
+.toast-error::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--error);
+  flex-shrink: 0;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
