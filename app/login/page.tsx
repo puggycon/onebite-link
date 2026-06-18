@@ -73,6 +73,11 @@ export default function LoginPage() {
               {loading ? '처리 중...' : '로그인'}
             </button>
             <p className="text-center text-sm text-[var(--text-sub)]">
+              <Link href="/forgot-password" className="text-[var(--accent)] hover:underline">
+                비밀번호 찾기
+              </Link>
+            </p>
+            <p className="text-center text-sm text-[var(--text-sub)]">
               계정이 없으신가요?{' '}
               <Link href="/signup" className="text-[var(--accent)] hover:underline">
                 회원가입
