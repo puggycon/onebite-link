@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -38,6 +39,16 @@ export default function LoginPage() {
     router.push('/')
   }
 
+  const handleKakaoLogin = async () => {
+    const supabase = createClient()
+    await supabase.auth.signInWithOAuth({
+      provider: 'kakao',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+  }
+
   return (
     <>
       {toast && <div className="toast-error">{toast}</div>}
@@ -71,6 +82,18 @@ export default function LoginPage() {
               disabled={!allFilled || loading}
             >
               {loading ? '처리 중...' : '로그인'}
+            </button>
+            <button
+              type="button"
+              onClick={handleKakaoLogin}
+              className="relative w-full h-[45px] rounded-md overflow-hidden cursor-pointer"
+            >
+              <Image
+                src="/kakao_login_medium_wide.png"
+                alt="카카오 로그인"
+                fill
+                sizes="384px"
+              />
             </button>
             <p className="text-center text-sm text-[var(--text-sub)]">
               <Link href="/forgot-password" className="text-[var(--accent)] hover:underline">
